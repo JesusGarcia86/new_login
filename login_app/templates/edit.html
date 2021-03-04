@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    Edit User Form:
+    <form action="/edit/{{user.id}}" method=POST>
+        {% csrf_token %}
+       First Name: <input type="text" name='fname' value={{user.first_name}}>
+       Last Name: <input type="text" name='lname' value={{user.last_name}}>
+       Email: <input type="text" name='email' value={{user.email}}>
+       <input type="submit">
+    </form>
+</body>
+</html>

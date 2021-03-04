@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success!</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+    <div id='wrap'>
+        <a href="/logout">Logout</a>
+        <a href="edit/{{ request.session.user.id }}">Edit</a>
+        <h1>Welcome to {{request.session.user_name}}'s Wall!</h1>
+
+        <div id='write'>
+            <h2>Write a Post:</h2>
+            <form action="/create_message" method=POST>
+                {% csrf_token %}
+                <textarea name="contents" cols="30" rows="10"></textarea>
+                <input type="submit" value="post">
+            </form>
+        </div>
+
+        <div id='messages'>
+            {% for message in all_messages %}
+            <div class='message'>
+                <p>Posted By: <a href="/user/{{message.poster.id}}">{{message.poster.first_name}} {{message.poster.last_name}}</a></p>
+                {% if message.poster.id == request.session.user_id %}
+                <a href="/delete/{{user.id}}">Delete Message</a>
+                {% endif %}
+                <p>{{message.created_at}}</p>
+                <p>{{ message.content }}</p>
+                <a href="/like/{{request.session.user_id}}">Like Post</a>
+                <p>{{ message.user_likes.count }}</p>
+                {% for comment in message.comments.all %}
+                    <p>{{comment.poster.first_name}} {{comment.poster.last_name}}</p>
+                    {% if comment.poster.id == request.session.user_id %}
+                    <a href="/comm_delete/{{comment.id}}">Delete Comment</a>
+                    {% endif %}
+                    <p>{{comment.created_at}}</p>
+                    <p>{{comment.content}}</p>
+                {% endfor %}
+                <p>Comment:</p>
+                <form action="/create_comment" method=POST>
+                    {% csrf_token %}
+                    <textarea name="contents" cols="20" rows="5"></textarea>
+                    <input type="hidden" name="message" value="{{message.id}}">
+                    <input type="submit" value="Post">
+                </form>
+                {% for comment in post.post_comments.all %}
+                    <p>{{comment.comment}}</p>
+                    <p>poster: {{comment.poster.first_name}} {{comment.poster.last_name}}</p>
+                    <a href="/delete/{{comment.id}}">Delete</a>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</body>
+
+</html>
